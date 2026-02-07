@@ -1,2 +1,2284 @@
 # Admission-Portal-of-My-university-
 Admission Portal of My university 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBD University - College Management Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e3a8a;
+            --primary-dark: #0c1d47;
+            --primary-light: #3b82f6;
+            --accent: #f97316;
+            --accent-light: #fb923c;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --border: #e2e8f0;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            display: none;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container.active {
+            display: flex;
+        }
+
+        .login-box {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 10px;
+            letter-spacing: -2px;
+        }
+
+        .login-header p {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            background: white;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(30, 58, 138, 0.3);
+        }
+
+        .demo-section {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            border: 2px dashed var(--border);
+        }
+
+        .demo-section h4 {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .demo-btn {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .demo-btn:last-child {
+            margin-bottom: 0;
+        }
+
+        .demo-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main Portal Styles */
+        .portal {
+            display: none;
+        }
+
+        .portal.active {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header/Navbar */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .header-logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .user-role {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: var(--bg-light);
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .notification-bell {
+            font-size: 20px;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .notification-bell:hover {
+            transform: scale(1.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .user-info p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .user-info .name {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .user-info .email {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--primary-dark);
+            color: white;
+            padding: 30px 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-title:first-child {
+            margin-top: 0;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            margin-bottom: 8px;
+            border: 2px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+        }
+
+        .nav-item.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nav-item .icon {
+            font-size: 18px;
+            width: 20px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            background: var(--bg-light);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Page Headers */
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            font-size: 15px;
+            color: var(--text-light);
+        }
+
+        /* Cards and Grids */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-card.success {
+            border-left-color: var(--success);
+        }
+
+        .stat-card.warning {
+            border-left-color: var(--warning);
+        }
+
+        .stat-card.danger {
+            border-left-color: var(--danger);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .stat-change {
+            font-size: 12px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        thead {
+            background: var(--bg-light);
+            border-bottom: 2px solid var(--border);
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: var(--bg-light);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .status-badge.present {
+            background: #d1fae5;
+            color: var(--success);
+        }
+
+        .status-badge.absent {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
+        .status-badge.approved {
+            background: #dbeafe;
+            color: var(--primary-light);
+        }
+
+        .status-badge.submitted {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        /* Forms */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            text-transform: capitalize;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease-out;
+        }
+
+        .modal-header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .modal-close {
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+            border: none;
+            background: none;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: var(--text-dark);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-muted);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-dark);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.active {
+            display: block;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: var(--danger);
+            border-left: 4px solid var(--danger);
+        }
+
+        .alert.info {
+            background: #dbeafe;
+            color: var(--primary-light);
+            border-left: 4px solid var(--primary-light);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                display: flex;
+                overflow-x: auto;
+                padding: 15px;
+                gap: 10px;
+            }
+
+            .sidebar-title {
+                display: none;
+            }
+
+            .nav-item {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            .content {
+                padding: 25px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .header-left,
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .login-box {
+                padding: 30px;
+            }
+
+            .page-header h1 {
+                font-size: 24px;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+        }
+
+        /* Utility Classes */
+        .mt {
+            margin-top: 20px;
+        }
+
+        .mb {
+            margin-bottom: 20px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+        }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--bg-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container active" id="loginContainer">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="logo">BBD UNIVERSITY</div>
+                <p>College Management Portal</p>
+                <p style="margin-top: 15px; font-size: 13px;">Advanced Campus Management System</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="userType">Login As</label>
+                    <select id="userType" required>
+                        <option value="">Select user type</option>
+                        <option value="student">Student</option>
+                        <option value="faculty">Faculty</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="login-btn">Sign In</button>
+            </form>
+
+            <div class="demo-section">
+                <h4>📋 Demo Credentials</h4>
+                <button type="button" class="demo-btn" onclick="demoLogin('student')">Student Demo</button>
+                <button type="button" class="demo-btn" onclick="demoLogin('faculty')">Faculty Demo</button>
+                <button type="button" class="demo-btn" onclick="demoLogin('admin')">Admin Demo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Portal -->
+    <div class="portal" id="portal">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <a href="#" class="header-logo">BBD University</a>
+                <div class="user-role" id="userRoleDisplay"></div>
+            </div>
+            <div class="header-right">
+                <div class="notification-bell">
+                    🔔
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar" id="userAvatar"></div>
+                    <div class="user-info">
+                        <p class="name" id="userName"></p>
+                        <p class="email" id="userEmail"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-title">Menu</div>
+                <div class="nav-item active" onclick="showPage('dashboard')">📊 Dashboard</div>
+                <div class="nav-item" onclick="showPage('admission')">📝 Admission</div>
+                <div class="nav-item" onclick="showPage('attendance')">📋 Attendance</div>
+                <div class="nav-item" onclick="showPage('fees')">💳 Fee Payment</div>
+                
+                <div class="sidebar-title">Resources</div>
+                <div class="nav-item" onclick="showPage('faculty')">👨‍🏫 Faculty</div>
+                <div class="nav-item" onclick="showPage('classes')">🎓 Classes</div>
+                <div class="nav-item" onclick="showPage('library')">📚 Library</div>
+                <div class="nav-item" onclick="showPage('placements')">💼 Placements</div>
+                <div class="nav-item" onclick="showPage('departments')">🏢 Departments</div>
+
+                <div class="sidebar-title">Account</div>
+                <div class="nav-item" onclick="showPage('profile')">👤 My Profile</div>
+                <div class="nav-item" onclick="showPage('settings')">⚙️ Settings</div>
+
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content">
+                <!-- Alert Messages -->
+                <div class="alert" id="alertBox"></div>
+
+                <!-- Dashboard Page -->
+                <div class="page active" id="dashboard">
+                    <div class="page-header">
+                        <h1>Welcome to BBD University</h1>
+                        <p id="welcomeMsg"></p>
+                    </div>
+
+                    <div id="studentDash">
+                        <div class="grid">
+                            <div class="stat-card success">
+                                <div class="stat-label">Attendance</div>
+                                <div class="stat-value">92%</div>
+                                <div class="stat-change positive">↑ 2% from last month</div>
+                            </div>
+                            <div class="stat-card warning">
+                                <div class="stat-label">Pending Fees</div>
+                                <div class="stat-value">₹5,000</div>
+                                <div class="stat-change negative">Due by Mar 31</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">CGPA</div>
+                                <div class="stat-value">3.8</div>
+                                <div class="stat-change positive">↑ 0.1 this semester</div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">📅 Upcoming Classes</div>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Subject</th>
+                                            <th>Faculty</th>
+                                            <th>Room</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Feb 8, 2025</td>
+                                            <td>Data Structures</td>
+                                            <td>Dr. Sharma</td>
+                                            <td>Room 301</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Feb 9, 2025</td>
+                                            <td>Web Development</td>
+                                            <td>Prof. Kumar</td>
+                                            <td>Lab 1</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Feb 10, 2025</td>
+                                            <td>Database Management</td>
+                                            <td>Dr. Verma</td>
+                                            <td>Room 205</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">📌 Notices & Announcements</div>
+                            <div style="padding: 15px; background: var(--bg-light); border-radius: 8px; margin-bottom: 15px;">
+                                <h4 style="margin-bottom: 5px;">Placement Drive - Feb 15</h4>
+                                <p style="margin: 0; color: var(--text-light); font-size: 13px;">Join our exciting placement drive with top IT companies.</p>
+                            </div>
+                            <div style="padding: 15px; background: var(--bg-light); border-radius: 8px;">
+                                <h4 style="margin-bottom: 5px;">Semester Exams - Mar 1-15</h4>
+                                <p style="margin: 0; color: var(--text-light); font-size: 13px;">Final exams schedule released. Check your timetable in Academics.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="facultyDash" style="display: none;">
+                        <div class="grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Classes Today</div>
+                                <div class="stat-value">4</div>
+                            </div>
+                            <div class="stat-card success">
+                                <div class="stat-label">Students</div>
+                                <div class="stat-value">120</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Assignments</div>
+                                <div class="stat-value">8</div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">My Classes Schedule</div>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Time</th>
+                                            <th>Room</th>
+                                            <th>Enrollment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Data Structures</td>
+                                            <td>9:00 AM - 10:30 AM</td>
+                                            <td>301</td>
+                                            <td>45</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Web Development</td>
+                                            <td>11:00 AM - 12:30 PM</td>
+                                            <td>Lab 1</td>
+                                            <td>30</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="adminDash" style="display: none;">
+                        <div class="grid">
+                            <div class="stat-card">
+                                <div class="stat-label">Total Students</div>
+                                <div class="stat-value">2,450</div>
+                            </div>
+                            <div class="stat-card success">
+                                <div class="stat-label">Active Users</div>
+                                <div class="stat-value">1,892</div>
+                            </div>
+                            <div class="stat-card warning">
+                                <div class="stat-label">Pending Approvals</div>
+                                <div class="stat-value">14</div>
+                            </div>
+                            <div class="stat-card danger">
+                                <div class="stat-label">Fee Defaults</div>
+                                <div class="stat-value">45</div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">System Analytics</div>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Metric</th>
+                                            <th>This Month</th>
+                                            <th>Last Month</th>
+                                            <th>Change</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>New Admissions</td>
+                                            <td>85</td>
+                                            <td>72</td>
+                                            <td><span class="stat-change positive">+13</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fees Collected</td>
+                                            <td>₹45,50,000</td>
+                                            <td>₹42,30,000</td>
+                                            <td><span class="stat-change positive">+7.5%</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admission Page -->
+                <div class="page" id="admission">
+                    <div class="page-header">
+                        <h1>Admission Management</h1>
+                        <p>Apply for admission, track your application status</p>
+                    </div>
+
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="switchTab('admissionTab1')">New Application</button>
+                        <button class="tab-btn" onclick="switchTab('admissionTab2')">My Applications</button>
+                        <button class="tab-btn" onclick="switchTab('admissionTab3')">Admissions List</button>
+                    </div>
+
+                    <div id="admissionTab1" class="tab-content active">
+                        <div class="card">
+                            <div class="card-title">Fill Application Form</div>
+                            <form id="admissionForm">
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>First Name</label>
+                                        <input type="text" placeholder="Enter first name" required>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Last Name</label>
+                                        <input type="text" placeholder="Enter last name" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>Email</label>
+                                        <input type="email" placeholder="Enter email" required>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Phone</label>
+                                        <input type="tel" placeholder="Enter phone" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>Program</label>
+                                        <select required>
+                                            <option value="">Select Program</option>
+                                            <option value="btech-cs">B.Tech - Computer Science</option>
+                                            <option value="btech-it">B.Tech - Information Technology</option>
+                                            <option value="btech-ec">B.Tech - Electronics</option>
+                                            <option value="mca">MCA</option>
+                                            <option value="mba">MBA</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>10th Percentage</label>
+                                        <input type="number" step="0.01" placeholder="Enter percentage" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>12th Percentage</label>
+                                        <input type="number" step="0.01" placeholder="Enter percentage" required>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>JEE/Entrance Score</label>
+                                        <input type="number" placeholder="Enter score" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>Father's Name</label>
+                                        <input type="text" placeholder="Enter father's name" required>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Mother's Name</label>
+                                        <input type="text" placeholder="Enter mother's name" required>
+                                    </div>
+                                </div>
+
+                                <div class="input-group">
+                                    <label>Address</label>
+                                    <textarea placeholder="Enter full address" required></textarea>
+                                </div>
+
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary">Submit Application</button>
+                                    <button type="reset" class="btn btn-secondary">Clear Form</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="admissionTab2" class="tab-content">
+                        <div class="card">
+                            <div class="card-title">My Applications</div>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Program</th>
+                                            <th>Application ID</th>
+                                            <th>Applied Date</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>B.Tech - Computer Science</td>
+                                            <td>#ADM-2025-0001</td>
+                                            <td>Jan 15, 2025</td>
+                                            <td><span class="status-badge approved">Approved</span></td>
+                                            <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">View Details</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>MCA</td>
+                                            <td>#ADM-2025-0002</td>
+                                            <td>Feb 1, 2025</td>
+                                            <td><span class="status-badge pending">Pending</span></td>
+                                            <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">View Details</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="admissionTab3" class="tab-content">
+                        <div class="card">
+                            <div class="card-title">All Admissions (Admin View)</div>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Student Name</th>
+                                            <th>Program</th>
+                                            <th>Status</th>
+                                            <th>Merit Score</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Rajesh Kumar</td>
+                                            <td>B.Tech - CS</td>
+                                            <td><span class="status-badge approved">Approved</span></td>
+                                            <td>92.5</td>
+                                            <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">View</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Priya Singh</td>
+                                            <td>B.Tech - IT</td>
+                                            <td><span class="status-badge pending">Pending</span></td>
+                                            <td>89.3</td>
+                                            <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">View</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Amit Patel</td>
+                                            <td>MCA</td>
+                                            <td><span class="status-badge approved">Approved</span></td>
+                                            <td>87.8</td>
+                                            <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">View</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attendance Page -->
+                <div class="page" id="attendance">
+                    <div class="page-header">
+                        <h1>Attendance Management</h1>
+                        <p>View and manage attendance records</p>
+                    </div>
+
+                    <div class="grid">
+                        <div class="stat-card success">
+                            <div class="stat-label">Overall Attendance</div>
+                            <div class="stat-value">92%</div>
+                            <div class="stat-change positive">Above required 75%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Classes Attended</div>
+                            <div class="stat-value">46/50</div>
+                            <div class="stat-change">4 classes absent</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Attendance Record</div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Subject</th>
+                                        <th>Faculty</th>
+                                        <th>Status</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Feb 7, 2025</td>
+                                        <td>Data Structures</td>
+                                        <td>Dr. Sharma</td>
+                                        <td><span class="status-badge present">Present</span></td>
+                                        <td>9:00 AM</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Feb 6, 2025</td>
+                                        <td>Web Development</td>
+                                        <td>Prof. Kumar</td>
+                                        <td><span class="status-badge present">Present</span></td>
+                                        <td>11:00 AM</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Feb 5, 2025</td>
+                                        <td>Database Systems</td>
+                                        <td>Dr. Verma</td>
+                                        <td><span class="status-badge absent">Absent</span></td>
+                                        <td>2:00 PM</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Feb 4, 2025</td>
+                                        <td>Data Structures</td>
+                                        <td>Dr. Sharma</td>
+                                        <td><span class="status-badge present">Present</span></td>
+                                        <td>9:00 AM</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="attendanceFaculty" style="display: none;">
+                        <div class="card">
+                            <div class="card-title">Mark Attendance</div>
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label>Class</label>
+                                    <select>
+                                        <option>B.Tech CSE 1st Year</option>
+                                        <option>B.Tech CSE 2nd Year</option>
+                                        <option>B.Tech IT 3rd Year</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>Date</label>
+                                    <input type="date">
+                                </div>
+                            </div>
+                            <div class="card" style="margin-top: 20px; background: var(--bg-light);">
+                                <div class="card-title">Students</div>
+                                <div style="max-height: 400px; overflow-y: auto;">
+                                    <div style="padding: 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                                        <span>Rajesh Kumar</span>
+                                        <input type="checkbox" checked>
+                                    </div>
+                                    <div style="padding: 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                                        <span>Priya Singh</span>
+                                        <input type="checkbox" checked>
+                                    </div>
+                                    <div style="padding: 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                                        <span>Amit Patel</span>
+                                        <input type="checkbox">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="btn-group" style="margin-top: 20px;">
+                                <button class="btn btn-primary">Submit Attendance</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fee Payment Page -->
+                <div class="page" id="fees">
+                    <div class="page-header">
+                        <h1>Fee Payment</h1>
+                        <p>Manage tuition fees and other payments</p>
+                    </div>
+
+                    <div class="grid">
+                        <div class="stat-card danger">
+                            <div class="stat-label">Pending Fees</div>
+                            <div class="stat-value">₹25,000</div>
+                            <div class="stat-change negative">Due immediately</div>
+                        </div>
+                        <div class="stat-card success">
+                            <div class="stat-label">Fees Paid</div>
+                            <div class="stat-value">₹1,45,000</div>
+                            <div class="stat-change">80% of total</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Fee Structure & Payment History</div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Semester</th>
+                                        <th>Amount</th>
+                                        <th>Due Date</th>
+                                        <th>Paid Date</th>
+                                        <th>Status</th>
+                                        <th>Receipt</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Spring 2025 - 1st</td>
+                                        <td>₹72,500</td>
+                                        <td>Jan 31, 2025</td>
+                                        <td>Jan 25, 2025</td>
+                                        <td><span class="status-badge approved">Paid</span></td>
+                                        <td><a href="#" style="color: var(--primary); text-decoration: none;">📥 Download</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Spring 2025 - 2nd</td>
+                                        <td>₹72,500</td>
+                                        <td>Mar 31, 2025</td>
+                                        <td>-</td>
+                                        <td><span class="status-badge danger">Pending</span></td>
+                                        <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">Pay Now</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hostel Fee</td>
+                                        <td>₹25,000</td>
+                                        <td>Feb 28, 2025</td>
+                                        <td>-</td>
+                                        <td><span class="status-badge danger">Pending</span></td>
+                                        <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">Pay Now</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card mt">
+                        <div class="card-title">Online Payment</div>
+                        <form id="paymentForm">
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label>Fee Type</label>
+                                    <select required>
+                                        <option value="">Select Fee Type</option>
+                                        <option value="tuition">Tuition Fee</option>
+                                        <option value="hostel">Hostel Fee</option>
+                                        <option value="transport">Transport Fee</option>
+                                        <option value="exam">Exam Fee</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>Amount</label>
+                                    <input type="number" placeholder="Enter amount" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label>Payment Method</label>
+                                    <select required>
+                                        <option value="">Select Method</option>
+                                        <option value="card">Credit/Debit Card</option>
+                                        <option value="netbanking">Net Banking</option>
+                                        <option value="upi">UPI</option>
+                                        <option value="wallet">Digital Wallet</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-success">Proceed to Payment</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Faculty Page -->
+                <div class="page" id="faculty">
+                    <div class="page-header">
+                        <h1>Faculty Directory</h1>
+                        <p>Connect with our experienced faculty members</p>
+                    </div>
+
+                    <div class="grid">
+                        <div class="card">
+                            <div style="text-align: center; padding-bottom: 20px;">
+                                <div style="font-size: 48px; margin-bottom: 15px;">👨‍🏫</div>
+                                <h3 style="margin: 10px 0;">Dr. Rajesh Sharma</h3>
+                                <p style="color: var(--accent); margin: 5px 0; font-weight: 600;">Professor - Computer Science</p>
+                                <p style="color: var(--text-muted); font-size: 13px; margin: 5px 0;">Data Structures & Algorithms</p>
+                                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
+                                    <p style="margin: 5px 0; font-size: 13px;">📧 sharma@bbd.edu.in</p>
+                                    <p style="margin: 5px 0; font-size: 13px;">📞 +91-9999-XXXX</p>
+                                    <p style="margin: 5px 0; font-size: 13px;">🏢 Room 301</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%;">Schedule Meeting</button>
+                        </div>
+
+                        <div class="card">
+                            <div style="text-align: center; padding-bottom: 20px;">
+                                <div style="font-size: 48px; margin-bottom: 15px;">👩‍🏫</div>
+                                <h3 style="margin: 10px 0;">Prof. Priya Kumar</h3>
+                                <p style="color: var(--accent); margin: 5px 0; font-weight: 600;">Associate Professor - IT</p>
+                                <p style="color: var(--text-muted); font-size: 13px; margin: 5px 0;">Web Development & Cloud</p>
+                                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
+                                    <p style="margin: 5px 0; font-size: 13px;">📧 priya@bbd.edu.in</p>
+                                    <p style="margin: 5px 0; font-size: 13px;">📞 +91-9999-XXXX</p>
+                                    <p style="margin: 5px 0; font-size: 13px;">🏢 Room 205</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%;">Schedule Meeting</button>
+                        </div>
+
+                        <div class="card">
+                            <div style="text-align: center; padding-bottom: 20px;">
+                                <div style="font-size: 48px; margin-bottom: 15px;">👨‍🏫</div>
+                                <h3 style="margin: 10px 0;">Dr. Amit Verma</h3>
+                                <p style="color: var(--accent); margin: 5px 0; font-weight: 600;">Professor - Electronics</p>
+                                <p style="color: var(--text-muted); font-size: 13px; margin: 5px 0;">Digital Electronics</p>
+                                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
+                                    <p style="margin: 5px 0; font-size: 13px;">📧 verma@bbd.edu.in</p>
+                                    <p style="margin: 5px 0; font-size: 13px;">📞 +91-9999-XXXX</p>
+                                    <p style="margin: 5px 0; font-size: 13px;">🏢 Lab 2</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" style="width: 100%;">Schedule Meeting</button>
+                        </div>
+                    </div>
+
+                    <div class="card mt">
+                        <div class="card-title">Request Leave/Appointment</div>
+                        <form>
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label>Select Faculty</label>
+                                    <select required>
+                                        <option>Dr. Rajesh Sharma</option>
+                                        <option>Prof. Priya Kumar</option>
+                                        <option>Dr. Amit Verma</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label>Preferred Date & Time</label>
+                                    <input type="datetime-local" required>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label>Purpose</label>
+                                <textarea placeholder="Enter reason for meeting" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Book Appointment</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Classes Page -->
+                <div class="page" id="classes">
+                    <div class="page-header">
+                        <h1>Class Schedule</h1>
+                        <p>View your class timetable and course information</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Weekly Class Schedule</div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Monday</th>
+                                        <th>Tuesday</th>
+                                        <th>Wednesday</th>
+                                        <th>Thursday</th>
+                                        <th>Friday</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>9:00 - 10:30</strong></td>
+                                        <td>Data Structures<br><small>Room 301</small></td>
+                                        <td>Web Dev<br><small>Lab 1</small></td>
+                                        <td>Data Structures<br><small>Room 301</small></td>
+                                        <td>Database<br><small>Room 205</small></td>
+                                        <td>Web Dev<br><small>Lab 1</small></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>11:00 - 12:30</strong></td>
+                                        <td>Web Dev<br><small>Lab 1</small></td>
+                                        <td>Database<br><small>Room 205</small></td>
+                                        <td>Web Dev<br><small>Lab 1</small></td>
+                                        <td>Data Structures<br><small>Room 301</small></td>
+                                        <td>Database<br><small>Room 205</small></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>2:00 - 3:30</strong></td>
+                                        <td colspan="5" style="text-align: center; color: var(--text-muted);">Lunch Break</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>3:30 - 5:00</strong></td>
+                                        <td>Lab Session<br><small>Lab 1</small></td>
+                                        <td>-</td>
+                                        <td>Lab Session<br><small>Lab 1</small></td>
+                                        <td>-</td>
+                                        <td>Seminar<br><small>Room 101</small></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card mt">
+                        <div class="card-title">Course Information</div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Course Code</th>
+                                        <th>Course Name</th>
+                                        <th>Faculty</th>
+                                        <th>Credits</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>CS301</td>
+                                        <td>Data Structures & Algorithms</td>
+                                        <td>Dr. Sharma</td>
+                                        <td>4</td>
+                                        <td><span class="status-badge approved">Active</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>CS302</td>
+                                        <td>Web Development</td>
+                                        <td>Prof. Kumar</td>
+                                        <td>3</td>
+                                        <td><span class="status-badge approved">Active</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>CS303</td>
+                                        <td>Database Management Systems</td>
+                                        <td>Dr. Verma</td>
+                                        <td>4</td>
+                                        <td><span class="status-badge approved">Active</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Library Page -->
+                <div class="page" id="library">
+                    <div class="page-header">
+                        <h1>Digital Library</h1>
+                        <p>Access library resources and manage your books</p>
+                    </div>
+
+                    <div class="grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Books Issued</div>
+                            <div class="stat-value">5</div>
+                            <div class="stat-change">Limit: 10</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Due Books</div>
+                            <div class="stat-value">1</div>
+                            <div class="stat-change negative">Due: Feb 15</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Issued Books</div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Book Title</th>
+                                        <th>Author</th>
+                                        <th>Issued Date</th>
+                                        <th>Due Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Introduction to Algorithms</td>
+                                        <td>Cormen et al.</td>
+                                        <td>Jan 25, 2025</td>
+                                        <td>Feb 8, 2025</td>
+                                        <td><span class="status-badge approved">Issued</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Database Design</td>
+                                        <td>C.J. Date</td>
+                                        <td>Jan 30, 2025</td>
+                                        <td>Feb 13, 2025</td>
+                                        <td><span class="status-badge approved">Issued</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Web Development with HTML/CSS</td>
+                                        <td>Jon Duckett</td>
+                                        <td>Feb 1, 2025</td>
+                                        <td>Feb 15, 2025</td>
+                                        <td><span class="status-badge pending">Due Soon</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>The Pragmatic Programmer</td>
+                                        <td>Hunt & Thomas</td>
+                                        <td>Feb 3, 2025</td>
+                                        <td>Feb 17, 2025</td>
+                                        <td><span class="status-badge approved">Issued</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card mt">
+                        <div class="card-title">Search Library Catalog</div>
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label>Search Books</label>
+                                <input type="text" placeholder="Enter book title or author name">
+                            </div>
+                            <div class="input-group">
+                                <label>Category</label>
+                                <select>
+                                    <option>All Categories</option>
+                                    <option>Computer Science</option>
+                                    <option>Electronics</option>
+                                    <option>Reference</option>
+                                    <option>Journals</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+
+                <!-- Placements Page -->
+                <div class="page" id="placements">
+                    <div class="page-header">
+                        <h1>Placements & Career</h1>
+                        <p>Track placement drives and job opportunities</p>
+                    </div>
+
+                    <div class="grid">
+                        <div class="stat-card success">
+                            <div class="stat-label">Placement Rate</div>
+                            <div class="stat-value">95%</div>
+                            <div class="stat-change">Last academic year</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Avg. CTC</div>
+                            <div class="stat-value">₹8.5L</div>
+                            <div class="stat-change">Per annum</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Upcoming Placement Drives</div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Company</th>
+                                        <th>Date</th>
+                                        <th>Position</th>
+                                        <th>CTC</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Google</td>
+                                        <td>Feb 15, 2025</td>
+                                        <td>Software Engineer</td>
+                                        <td>₹20 LPA</td>
+                                        <td><span class="status-badge pending">Registration Open</span></td>
+                                        <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">Register</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>TCS</td>
+                                        <td>Feb 20, 2025</td>
+                                        <td>Associate Engineer</td>
+                                        <td>₹6 LPA</td>
+                                        <td><span class="status-badge pending">Registration Open</span></td>
+                                        <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;">Register</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Amazon</td>
+                                        <td>Mar 5, 2025</td>
+                                        <td>Developer</td>
+                                        <td>₹18 LPA</td>
+                                        <td><span class="status-badge pending">Coming Soon</span></td>
+                                        <td><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Notify</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card mt">
+                        <div class="card-title">My Placements</div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Company</th>
+                                        <th>Position</th>
+                                        <th>CTC</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Microsoft</td>
+                                        <td>Cloud Engineer</td>
+                                        <td>₹16 LPA</td>
+                                        <td><span class="status-badge approved">Selected</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Departments Page -->
+                <div class="page" id="departments">
+                    <div class="page-header">
+                        <h1>Academic Departments</h1>
+                        <p>Explore our academic departments and programs</p>
+                    </div>
+
+                    <div class="grid">
+                        <div class="card">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">🖥️ Computer Science</h3>
+                            <p style="margin-bottom: 15px; color: var(--text-muted);">B.Tech in Computer Science & Engineering</p>
+                            <ul style="list-style: none; margin-bottom: 15px;">
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">📍 4-Year Program</li>
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">👥 120 Seats</li>
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">📊 NAAC A+</li>
+                            </ul>
+                            <button class="btn btn-primary" style="width: 100%;">Learn More</button>
+                        </div>
+
+                        <div class="card">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">📱 Information Technology</h3>
+                            <p style="margin-bottom: 15px; color: var(--text-muted);">B.Tech in Information Technology</p>
+                            <ul style="list-style: none; margin-bottom: 15px;">
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">📍 4-Year Program</li>
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">👥 60 Seats</li>
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">📊 NAAC A+</li>
+                            </ul>
+                            <button class="btn btn-primary" style="width: 100%;">Learn More</button>
+                        </div>
+
+                        <div class="card">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">⚡ Electronics Engineering</h3>
+                            <p style="margin-bottom: 15px; color: var(--text-muted);">B.Tech in Electronics & Communication</p>
+                            <ul style="list-style: none; margin-bottom: 15px;">
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">📍 4-Year Program</li>
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">👥 60 Seats</li>
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">📊 NAAC A</li>
+                            </ul>
+                            <button class="btn btn-primary" style="width: 100%;">Learn More</button>
+                        </div>
+
+                        <div class="card">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">💼 MBA</h3>
+                            <p style="margin-bottom: 15px; color: var(--text-muted);">Master of Business Administration</p>
+                            <ul style="list-style: none; margin-bottom: 15px;">
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">📍 2-Year Program</li>
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">👥 40 Seats</li>
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">📊 AACSB Accredited</li>
+                            </ul>
+                            <button class="btn btn-primary" style="width: 100%;">Learn More</button>
+                        </div>
+
+                        <div class="card">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">🎓 MCA</h3>
+                            <p style="margin-bottom: 15px; color: var(--text-muted);">Master of Computer Applications</p>
+                            <ul style="list-style: none; margin-bottom: 15px;">
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">📍 2-Year Program</li>
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">👥 30 Seats</li>
+                                <li style="padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px;">📊 NAAC Accredited</li>
+                            </ul>
+                            <button class="btn btn-primary" style="width: 100%;">Learn More</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Page -->
+                <div class="page" id="profile">
+                    <div class="page-header">
+                        <h1>My Profile</h1>
+                        <p>Manage your personal information</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Personal Information</div>
+                        <div style="display: flex; gap: 30px; margin-bottom: 30px; align-items: flex-start;">
+                            <div style="text-align: center;">
+                                <div class="user-avatar" id="profileAvatar" style="width: 120px; height: 120px; font-size: 48px;"></div>
+                                <button class="btn btn-secondary" style="margin-top: 15px; font-size: 12px;">Change Photo</button>
+                            </div>
+                            <div style="flex: 1;">
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>Full Name</label>
+                                        <input type="text" value="Rajesh Kumar" disabled>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Email</label>
+                                        <input type="email" value="rajesh.kumar@bbd.edu.in" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>Phone</label>
+                                        <input type="tel" value="+91-9999-XXXX" disabled>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Roll Number</label>
+                                        <input type="text" value="CSE-2022-001" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="border-top: 2px solid var(--border); padding-top: 25px;">
+                            <h3 style="margin-bottom: 20px; font-size: 16px;">Academic Details</h3>
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label>Program</label>
+                                    <input type="text" value="B.Tech - Computer Science" disabled>
+                                </div>
+                                <div class="input-group">
+                                    <label>Semester</label>
+                                    <input type="text" value="4th Semester" disabled>
+                                </div>
+                                <div class="input-group">
+                                    <label>CGPA</label>
+                                    <input type="text" value="3.8" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" style="margin-top: 25px;">Edit Profile</button>
+                    </div>
+                </div>
+
+                <!-- Settings Page -->
+                <div class="page" id="settings">
+                    <div class="page-header">
+                        <h1>Settings</h1>
+                        <p>Manage your account settings and preferences</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Security Settings</div>
+                        <div style="padding: 20px 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border);">
+                                <div>
+                                    <p style="font-weight: 600; margin: 0;">Change Password</p>
+                                    <p style="font-size: 13px; color: var(--text-muted); margin: 5px 0;">Update your account password</p>
+                                </div>
+                                <button class="btn btn-secondary">Change</button>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border);">
+                                <div>
+                                    <p style="font-weight: 600; margin: 0;">Two-Factor Authentication</p>
+                                    <p style="font-size: 13px; color: var(--text-muted); margin: 5px 0;">Add an extra layer of security</p>
+                                </div>
+                                <input type="checkbox">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt">
+                        <div class="card-title">Notification Settings</div>
+                        <div style="padding: 20px 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border);">
+                                <div>
+                                    <p style="font-weight: 600; margin: 0;">Email Notifications</p>
+                                    <p style="font-size: 13px; color: var(--text-muted); margin: 5px 0;">Receive updates via email</p>
+                                </div>
+                                <input type="checkbox" checked>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border);">
+                                <div>
+                                    <p style="font-weight: 600; margin: 0;">SMS Notifications</p>
+                                    <p style="font-size: 13px; color: var(--text-muted); margin: 5px 0;">Receive SMS updates</p>
+                                </div>
+                                <input type="checkbox" checked>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0;">
+                                <div>
+                                    <p style="font-weight: 600; margin: 0;">Fee Payment Alerts</p>
+                                    <p style="font-size: 13px; color: var(--text-muted); margin: 5px 0;">Get alerts for pending fees</p>
+                                </div>
+                                <input type="checkbox" checked>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt">
+                        <div class="card-title">Privacy Settings</div>
+                        <div style="padding: 20px 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border);">
+                                <div>
+                                    <p style="font-weight: 600; margin: 0;">Profile Visibility</p>
+                                    <p style="font-size: 13px; color: var(--text-muted); margin: 5px 0;">Control who can see your profile</p>
+                                </div>
+                                <select style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;">
+                                    <option>Public</option>
+                                    <option>Private</option>
+                                    <option>Friends Only</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-danger" style="margin-top: 25px;">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Login System
+        function demoLogin(userType) {
+            const demoCredentials = {
+                student: { email: 'student@bbd.edu.in', password: 'student123', name: 'Rajesh Kumar', role: 'Student' },
+                faculty: { email: 'faculty@bbd.edu.in', password: 'faculty123', name: 'Dr. Sharma', role: 'Faculty' },
+                admin: { email: 'admin@bbd.edu.in', password: 'admin123', name: 'Admin User', role: 'Administrator' }
+            };
+
+            const cred = demoCredentials[userType];
+            document.getElementById('email').value = cred.email;
+            document.getElementById('password').value = cred.password;
+            document.getElementById('userType').value = userType;
+            document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const userType = document.getElementById('userType').value;
+
+            // Basic validation
+            if (!email || !password || !userType) {
+                alert('Please fill all fields');
+                return;
+            }
+
+            // Store user session
+            sessionStorage.setItem('userEmail', email);
+            sessionStorage.setItem('userType', userType);
+            
+            const names = {
+                'student@bbd.edu.in': 'Rajesh Kumar',
+                'faculty@bbd.edu.in': 'Dr. Sharma',
+                'admin@bbd.edu.in': 'Admin User'
+            };
+
+            sessionStorage.setItem('userName', names[email] || 'User');
+
+            loginUser();
+        });
+
+        function loginUser() {
+            const userType = sessionStorage.getItem('userType');
+            const userName = sessionStorage.getItem('userName');
+            const userEmail = sessionStorage.getItem('userEmail');
+
+            // Hide login, show portal
+            document.getElementById('loginContainer').classList.remove('active');
+            document.getElementById('portal').classList.add('active');
+
+            // Update header
+            document.getElementById('userRoleDisplay').textContent = userType.toUpperCase();
+            document.getElementById('userName').textContent = userName;
+            document.getElementById('userEmail').textContent = userEmail;
+            document.getElementById('userAvatar').textContent = userName.charAt(0).toUpperCase();
+            document.getElementById('profileAvatar').textContent = userName.charAt(0).toUpperCase();
+
+            // Update welcome message
+            document.getElementById('welcomeMsg').textContent = `Welcome back, ${userName}! Here's what's happening with your account today.`;
+
+            // Show role-specific content
+            if (userType === 'student') {
+                document.getElementById('studentDash').style.display = 'block';
+                document.getElementById('facultyDash').style.display = 'none';
+                document.getElementById('adminDash').style.display = 'none';
+                document.getElementById('attendanceFaculty').style.display = 'none';
+            } else if (userType === 'faculty') {
+                document.getElementById('studentDash').style.display = 'none';
+                document.getElementById('facultyDash').style.display = 'block';
+                document.getElementById('adminDash').style.display = 'none';
+                document.getElementById('attendanceFaculty').style.display = 'block';
+            } else if (userType === 'admin') {
+                document.getElementById('studentDash').style.display = 'none';
+                document.getElementById('facultyDash').style.display = 'none';
+                document.getElementById('adminDash').style.display = 'block';
+                document.getElementById('attendanceFaculty').style.display = 'block';
+            }
+        }
+
+        // Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+
+            // Update nav item
+            event.target.classList.add('active');
+        }
+
+        function switchTab(tabId) {
+            const tabName = tabId.match(/admissionTab(\d)/)[1];
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            document.getElementById('loginContainer').classList.add('active');
+            document.getElementById('portal').classList.remove('active');
+            document.getElementById('loginForm').reset();
+        }
+
+        // Form submissions
+        document.getElementById('admissionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showAlert('Admission application submitted successfully!', 'success');
+            this.reset();
+        });
+
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showAlert('Payment processing... You will be redirected to payment gateway.', 'info');
+        });
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.textContent = message;
+            alertBox.className = 'alert active ' + type;
+            setTimeout(() => {
+                alertBox.classList.remove('active');
+            }, 4000);
+        }
+
+        // Initialize
+        function init() {
+            const userEmail = sessionStorage.getItem('userEmail');
+            if (userEmail) {
+                loginUser();
+            }
+        }
+
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
+
+
